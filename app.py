@@ -45,7 +45,7 @@ def generate():
         zipf.write(os.path.join(app.config['UPLOAD_FOLDER'], pdf_filename), pdf_filename)
 
     # Return the download link to the zip folder
-    return f'<a href="/download/{zip_filename}">Download Files</a>'
+    return render_template('generazione.html', zip_filename=zip_filename)
 
 
 
