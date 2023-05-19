@@ -35,7 +35,7 @@
         />
       </div>
       <h1>Genera gli Attestati</h1>
-      <form method="POST" enctype="multipart/form-data">
+      <form method="POST" action="/gen" enctype="multipart/form-data">
         <div class="">
           <label for="excelFile" class="form-label"
             >Carica il file Excel:</label
@@ -60,7 +60,7 @@
         </div>
         <div class="">
           <label for="fieldNr">Numero di campi da compilare</label>
-          <input type="number" min="1" id="fieldNr" />
+          <input type="number" min="1" id="fieldNr" name="fieldNr" />
         </div>
         <div class="fields"></div>
 
@@ -78,7 +78,7 @@
         console.log(number);
         if (number > 0) {
           for (let i = 0; i < number; i++) {
-            fields.innerHTML += `<input type="text" name="campo" id="campo-${i}" placeholder="Inserisci il nome del campo del form presente nel PDF" />`;
+            fields.innerHTML += `<input type="text" name="campo-${i}" id="campo-${i}" placeholder="Inserisci il nome del campo del form presente nel PDF" />`;
           }
         }
       });
