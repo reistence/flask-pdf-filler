@@ -37,6 +37,12 @@ def generate():
     excel_file.save(os.path.join(app.config['UPLOAD_FOLDER'], excel_filename))
     pdf_file.save(os.path.join(app.config['UPLOAD_FOLDER'], pdf_filename))
 
+
+
+
+
+    
+
     # Create a zip folder
     zip_filename = 'files.zip'
     zip_path = os.path.join(app.config['UPLOAD_FOLDER'], zip_filename)
