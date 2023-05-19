@@ -1,7 +1,24 @@
 from flask import Flask
-from flask import render_template, redirect, request
+from flask import render_template, redirect, request, send_file
+from werkzeug.utils import secure_filename
+
+import sys
+import os
+import pdfrw
+import openpyxl
+import re
+import zipfile
 
 app = Flask(__name__)
+
+
+UPLOAD_FOLDER = './bho'
+
+if not os.path.exists(UPLOAD_FOLDER):
+    os.makedirs(UPLOAD_FOLDER)
+
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+
 
 @app.route("/")
 def index():
@@ -14,8 +31,27 @@ def generate():
     pdf_file = request.files['pdfFile']
     field_nr = int(request.form['fieldNr'])
     campo_values = [request.form.get(f'campo-{i}') for i in range(field_nr)]
-    print(excel_file, pdf_file)
-    if campo_values:
-        print(campo_values)
-    # return render_template('generazione.html')
-    return'Form submitted successfully'
+    
+    excel_filename = secure_filename(excel_file.filename)  # Use the same name as the original file
+    pdf_filename = secure_filename(pdf_file.filename)  # Use the same name as the original file
+    excel_file.save(os.path.join(app.config['UPLOAD_FOLDER'], excel_filename))
+    pdf_file.save(os.path.join(app.config['UPLOAD_FOLDER'], pdf_filename))
+
+    # Create a zip folder
+    zip_filename = 'files.zip'
+    zip_path = os.path.join(app.config['UPLOAD_FOLDER'], zip_filename)
+    with zipfile.ZipFile(zip_path, 'w') as zipf:
+        zipf.write(os.path.join(app.config['UPLOAD_FOLDER'], excel_filename), excel_filename)
+        zipf.write(os.path.join(app.config['UPLOAD_FOLDER'], pdf_filename), pdf_filename)
+
+    # Return the download link to the zip folder
+    return f'<a href="/download/{zip_filename}">Download Files</a>'
+
+
+
+@app.route('/download/<filename>')
+def download_file(filename):
+    file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+    return send_file(file_path, as_attachment=True)
+
+
