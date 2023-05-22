@@ -12,6 +12,8 @@ import openpyxl
 
 app = Flask(__name__)
 
+ASCII_LOWER = 'abcdefghijklmnopqrstuvwxyz'
+
 
 UPLOAD_FOLDER = './upload'
 
@@ -22,9 +24,9 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 OUTPUT_FOLDER = './output'
 
-
 app.config['OUTPUT_FOLDER'] = OUTPUT_FOLDER
 
+# Sanitise names
 def clean_file_name(file_name):
     # remove spaces 
     file_name = file_name.replace(' ', '-')
@@ -35,25 +37,29 @@ def clean_file_name(file_name):
     clean_file_name = f"{file_name}"
     return clean_file_name
 
-
+# Home
 @app.route("/")
 def index():
     return render_template('index.html')
 
-
+# Generation
 @app.route("/gen", methods=['POST'])
 def generate():
+    # Get fields from the form via POST
     excel_file = request.files['excelFile']
     pdf_file = request.files['pdfFile']
     field_nr = int(request.form['fieldNr'])
+
+    # TODO: to modify if alphabet as key
     campo_values = [request.form.get(f'campo-{i}') for i in range(field_nr)]
     
+    # Save and name xlxs and pdf
     excel_filename = secure_filename(excel_file.filename)  # Use the same name as the original file
     pdf_filename = secure_filename(pdf_file.filename)  # Use the same name as the original file
     excel_file.save(os.path.join(app.config['UPLOAD_FOLDER'], excel_filename))
     pdf_file.save(os.path.join(app.config['UPLOAD_FOLDER'], pdf_filename))
 
-
+    # destroy/recreate output folder
     shutil.rmtree(app.config['OUTPUT_FOLDER'])
     if not os.path.exists(OUTPUT_FOLDER):
          os.makedirs(OUTPUT_FOLDER)
@@ -65,6 +71,7 @@ def generate():
     template_pdf = pdfrw.PdfReader('./upload/'+pdf_filename);
     template_pdf.Root.AcroForm.update(pdfrw.PdfDict(NeedAppearances=pdfrw.PdfObject('true')))
 
+    # open the excel as worksheet
     workbook = openpyxl.load_workbook('./upload/'+excel_filename)
     worksheet = workbook.active
     data = []
