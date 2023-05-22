@@ -1,6 +1,7 @@
 import sys
 import os
 import re
+import shutil
 import zipfile
 from flask import Flask
 from flask import render_template, redirect, request, send_file
@@ -20,8 +21,7 @@ if not os.path.exists(UPLOAD_FOLDER):
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 OUTPUT_FOLDER = './output'
-if not os.path.exists(OUTPUT_FOLDER):
-    os.makedirs(OUTPUT_FOLDER)
+
 
 app.config['OUTPUT_FOLDER'] = OUTPUT_FOLDER
 
@@ -54,9 +54,13 @@ def generate():
     pdf_file.save(os.path.join(app.config['UPLOAD_FOLDER'], pdf_filename))
 
 
+    shutil.rmtree(app.config['OUTPUT_FOLDER'])
+    if not os.path.exists(OUTPUT_FOLDER):
+         os.makedirs(OUTPUT_FOLDER)
+
      # Create a zip folder
-    zip_filename = excel_filename + '_PDFs.zip'
-    zip_path = os.path.join(app.config['OUTPUT_FOLDER'], zip_filename)
+    zip_filename = excel_filename + pdf_filename +'_PDFs'
+    # zip_path = os.path.join(app.config['zip_filename'],)
 
     template_pdf = pdfrw.PdfReader('./upload/'+pdf_filename);
     template_pdf.Root.AcroForm.update(pdfrw.PdfDict(NeedAppearances=pdfrw.PdfObject('true')))
@@ -97,33 +101,35 @@ def generate():
 
         output_name = './output/' +pdf_filename + '_{}.pdf'.format(clean_file_name(nameToBeSaved))
 
-        # #save pdf
-        # output_pdf.write(output_name, template_pdf)
+        #save pdf
+        output_pdf.write(output_name, template_pdf)
         # with zipfile.ZipFile(zip_path, 'w') as zipf:
         #     zipf.write( output_name, os.path.basename(output_name))
         #     # zipf.write(os.path.join(app.config['UPLOAD_FOLDER'], pdf_filename), pdf_filename)
-        with zipfile.ZipFile(zip_path, 'w') as zipf:
-            for i, row in enumerate(data[1:], 1):  # Start from index 1 to skip the header row
-                nameToBeSaved = row[0] + '_' + row[1]
-                output_name = './output/' + pdf_filename + '_{}.pdf'.format(clean_file_name(nameToBeSaved))
-                output_pdf.write(output_name, template_pdf)
-                zipf.write(output_name, os.path.basename(output_name))
+        # with zipfile.ZipFile(zip_path, 'w') as zipf:
+        #     for i, row in enumerate(data[1:], 1):  # Start from index 1 to skip the header row
+        #         nameToBeSaved = row[0] + '_' + row[1]
+        #         output_name = './output/' + pdf_filename + '_{}.pdf'.format(clean_file_name(nameToBeSaved))
+        #         output_pdf.write(output_name, template_pdf)
+        #         zipf.write(output_name, os.path.basename(output_name))
 
 
 
-    
+    shutil.make_archive( zip_filename, 'zip', OUTPUT_FOLDER)
+
     
 
     
 
     # Return the download link to the zip folder
-    return render_template('generazione.html', zip_filename=zip_filename)
+    # return render_template('generazione.html', zip_filename=zip_filename)
+    return send_file(os.path.basename(zip_filename + '.zip'), as_attachment=True)
 
 
 
-@app.route('/download/<filename>')
-def download_file(filename):
-    file_path = os.path.join(app.config['OUTPUT_FOLDER'], filename)
-    return send_file(file_path, as_attachment=True)
+# @app.route('/download/<filename>')
+# def download_file(filename):
+#     file_path = os.path.join(app.config['OUTPUT_FOLDER'], filename)
+#     return send_file(file_path, as_attachment=True)
 
 

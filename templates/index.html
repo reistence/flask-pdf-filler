@@ -64,7 +64,7 @@
         </div>
         <div class="fields"></div>
 
-        <button class="m-auto my-btn" type="submit">Genera</button>
+        <button id="subBtn" class="m-auto my-btn" type="submit">Genera</button>
       </form>
     </div>
 
@@ -75,12 +75,30 @@
       fieldNr.addEventListener("keyup", function () {
         fields.innerHTML = "";
         number = fieldNr.value;
-        console.log(number);
+
         if (number > 0) {
           for (let i = 0; i < number; i++) {
             fields.innerHTML += `<input type="text" name="campo-${i}" id="campo-${i}" placeholder="Inserisci il nome del campo del form presente nel PDF" />`;
           }
         }
+      });
+
+      const form = document.querySelector("form");
+      const subBtn = document.getElementById("subBtn");
+
+      subBtn.addEventListener("click", function () {
+        setTimeout(() => {
+          form.innerHTML = `<img
+          style="width: 5em; margin: 0 auto; display: block"
+          src="./static/images/loading-icon-transparent-background-12.gif"
+          alt=""
+          srcset=""
+        />`;
+        }, 1000);
+
+        setTimeout(() => {
+          location.reload();
+        }, 3000);
       });
     </script>
   </body>
