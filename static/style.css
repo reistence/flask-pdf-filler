@@ -77,13 +77,13 @@ form > div > input:hover,
 select:hover {
   transform: scale(1.02);
   transition: all 200ms;
-  border: 1px solid #02a54f !important;
+  border: 1px solid #a70212 !important;
 }
 form > div > input:focus,
 select:focus {
-  border-color: #02a54f !important;
+  border-color: #a70212 !important;
   outline: 0;
-  box-shadow: 0 0 0.5rem #02a54f !important;
+  box-shadow: 0 0 0.5rem #a70212 !important;
 }
 
 form > button {
@@ -96,8 +96,8 @@ form > button {
   transition: all 200ms;
 }
 form > button:hover {
-  background-color: #02a54f;
-  border: 1px solid #02a54f;
+  background-color: #a70212;
+  border: 1px solid #a70212;
   transform: scale(1.02);
   color: white;
   transition: all 200ms;
