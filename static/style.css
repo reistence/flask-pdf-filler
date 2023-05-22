@@ -26,6 +26,8 @@ body {
   margin: 2em auto;
   width: 250px;
   min-width: 100px;
+  border-radius: 5px;
+  overflow: hidden;
 }
 
 /* .logo > img {
