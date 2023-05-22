@@ -1,13 +1,13 @@
+import sys
+import os
+import re
+import zipfile
 from flask import Flask
 from flask import render_template, redirect, request, send_file
 from werkzeug.utils import secure_filename
 
-import sys
-import os
 import pdfrw
 import openpyxl
-import re
-import zipfile
 
 app = Flask(__name__)
 
