@@ -107,3 +107,8 @@ form > button:hover {
   width: 100%;
   gap: 1em;
 }
+
+.nrField {
+  width: 5em;
+  text-align: center;
+}
