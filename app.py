@@ -28,11 +28,11 @@ app.config['OUTPUT_FOLDER'] = OUTPUT_FOLDER
 
 # Sanitise names
 def clean_file_name(file_name):
-    # remove spaces 
+    # spaces 
     file_name = file_name.replace(' ', '-')
-    # Removes special characters.
+    # special chars.
     file_name = re.sub('[^A-Za-z0-9\-_]', '', file_name)
-    # Replaces multiple hyphens with a single one.
+    # if multiple hyphens = a single one.
     file_name = re.sub('-+', '-', file_name)
     clean_file_name = f"{file_name}"
     return clean_file_name
@@ -54,8 +54,8 @@ def generate():
     campo_values = [request.form.get(f'campo-{i}') for i in range(field_nr)]
     
     # Save and name xlxs and pdf
-    excel_filename = secure_filename(excel_file.filename)  # Use the same name as the original file
-    pdf_filename = secure_filename(pdf_file.filename)  # Use the same name as the original file
+    excel_filename = secure_filename(excel_file.filename)
+    pdf_filename = secure_filename(pdf_file.filename)
     excel_file.save(os.path.join(app.config['UPLOAD_FOLDER'], excel_filename))
     pdf_file.save(os.path.join(app.config['UPLOAD_FOLDER'], pdf_filename))
 
@@ -85,7 +85,7 @@ def generate():
         if i == 0:  # Skip the first row
             continue
         nameToBeSaved = row[0]+'_'+row[1]
-         # Create a new PDF object by copying the template
+         # new PDF object by copying the template
         output_pdf = pdfrw.PdfWriter()
         output_pdf.addpages(template_pdf.pages[:])
 
@@ -107,26 +107,10 @@ def generate():
 
 
         output_name = './output/' +pdf_filename + '_{}.pdf'.format(clean_file_name(nameToBeSaved))
-
         #save pdf
         output_pdf.write(output_name, template_pdf)
-        # with zipfile.ZipFile(zip_path, 'w') as zipf:
-        #     zipf.write( output_name, os.path.basename(output_name))
-        #     # zipf.write(os.path.join(app.config['UPLOAD_FOLDER'], pdf_filename), pdf_filename)
-        # with zipfile.ZipFile(zip_path, 'w') as zipf:
-        #     for i, row in enumerate(data[1:], 1):  # Start from index 1 to skip the header row
-        #         nameToBeSaved = row[0] + '_' + row[1]
-        #         output_name = './output/' + pdf_filename + '_{}.pdf'.format(clean_file_name(nameToBeSaved))
-        #         output_pdf.write(output_name, template_pdf)
-        #         zipf.write(output_name, os.path.basename(output_name))
-
-
 
     shutil.make_archive( zip_filename, 'zip', OUTPUT_FOLDER)
-
-    
-
-    
 
     # Return the download link to the zip folder
     # return render_template('generazione.html', zip_filename=zip_filename)
