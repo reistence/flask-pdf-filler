@@ -21,19 +21,24 @@
     />
     <!-- CSS -->
     <link rel="stylesheet" href="./static/style.css" />
-    <title>Genera attestati</title>
+    <!-- GSAP -->
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.5/gsap.min.js"
+      integrity="sha512-cOH8ndwGgPo+K7pTvMrqYbmI8u8k6Sho3js0gOqVWTmQMlLIi6TbqGWRTpf1ga8ci9H3iPsvDLr4X7xwhC/+DQ=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    ></script>
+    <title>Fill'em All</title>
   </head>
   <body>
     <div class="container">
       <div class="logo">
         <img src="./static/images/logo.png" alt="PDF logo" srcset="" />
       </div>
-      <h1>Genera gli Attestati</h1>
+      <h1>Fill'em all</h1>
       <form method="POST" action="/gen" enctype="multipart/form-data">
-        <div class="">
-          <label for="excelFile" class="form-label"
-            >Carica il file Excel:</label
-          >
+        <div class="input-wrp">
+          <label for="excelFile" class="form-label">Upload the xlsx:</label>
           <input
             class="form-control"
             type="file"
@@ -42,8 +47,8 @@
             required
           />
         </div>
-        <div class="">
-          <label for="pdfFile" class="form-label">Carica il PDF:</label>
+        <div class="input-wrp">
+          <label for="pdfFile" class="form-label">Upload the PDF:</label>
           <input
             class="form-control"
             type="file"
@@ -52,8 +57,8 @@
             required
           />
         </div>
-        <div class="">
-          <label for="fieldNr">Numero di campi da compilare:</label>
+        <div class="input-wrp">
+          <label for="fieldNr">Number of fields to fill:</label>
           <input
             class="nrField"
             type="number"
@@ -64,28 +69,38 @@
         </div>
         <div class="fields"></div>
 
-        <button id="subBtn" class="m-auto my-btn" type="submit">Genera</button>
+        <button id="subBtn" class="m-auto my-btn" type="submit">Fill</button>
       </form>
     </div>
 
     <script>
-      const fields = document.querySelector(".fields");
-      const fieldNr = document.getElementById("fieldNr");
+      const tl = gsap.timeline({
+        stagger: 0.1,
+        ease: "power1",
+      });
+      tl.from("h1", { x: "-500%", duration: 0.5, ease: "power1" });
+      tl.from(".logo", { y: -500, duration: 2, ease: "elastic" });
+      tl.from("form", { x: "-2000%", ease: "power2" });
+      tl.from(".input-wrp", { y: "-2000%", stagger: 0.3, ease: "expo" });
+      tl.from("#subBtn", { y: "20%", duration: 1, ease: "expo" });
 
+      // generate pdf name fields
+      const fieldNr = document.getElementById("fieldNr");
+      const fields = document.querySelector(".fields");
       fieldNr.addEventListener("keyup", function () {
         fields.innerHTML = "";
         number = fieldNr.value;
 
         if (number > 0) {
           for (let i = 0; i < number; i++) {
-            fields.innerHTML += `<input type="text" name="campo-${i}" id="campo-${i}" placeholder="Inserisci il nome del campo del form presente nel PDF" />`;
+            fields.innerHTML += `<input type="text" class="genFields" name="campo-${i}" id="campo-${i}" placeholder="Insert the pdf field name" />`;
           }
         }
       });
 
+      // Hndle submit
       const form = document.querySelector("form");
       const subBtn = document.getElementById("subBtn");
-
       subBtn.addEventListener("click", function () {
         setTimeout(() => {
           form.innerHTML = `<img
