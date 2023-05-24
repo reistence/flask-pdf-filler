@@ -10,15 +10,15 @@ from werkzeug.utils import secure_filename
 import pdfrw
 import openpyxl
 
+
 app = Flask(__name__)
+
 
 ASCII_LOWER = 'abcdefghijklmnopqrstuvwxyz'
 
 
 UPLOAD_FOLDER = './upload'
 
-if not os.path.exists(UPLOAD_FOLDER):
-    os.makedirs(UPLOAD_FOLDER)
 
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
@@ -46,6 +46,10 @@ def index():
 @app.route("/gen", methods=['POST'])
 def generate():
     try:
+        if os.path.exists(UPLOAD_FOLDER):
+             shutil.rmtree(app.config['UPLOAD_FOLDER'])
+        if not os.path.exists(UPLOAD_FOLDER):
+            os.makedirs(UPLOAD_FOLDER)
         # Get fields from the form via POST
         excel_file = request.files['excelFile']
         pdf_file = request.files['pdfFile']
@@ -61,7 +65,8 @@ def generate():
         pdf_file.save(os.path.join(app.config['UPLOAD_FOLDER'], pdf_filename))
 
         # destroy/recreate output folder
-        shutil.rmtree(app.config['OUTPUT_FOLDER'])
+        if os.path.exists(OUTPUT_FOLDER):
+            shutil.rmtree(app.config['OUTPUT_FOLDER'])
         if not os.path.exists(OUTPUT_FOLDER):
             os.makedirs(OUTPUT_FOLDER)
 
