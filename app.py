@@ -70,9 +70,8 @@ def generate():
         if not os.path.exists(OUTPUT_FOLDER):
             os.makedirs(OUTPUT_FOLDER)
 
-        # Create a zip folder
+        # Create a zip filename
         zip_filename = excel_filename + pdf_filename +'_PDFs'
-        # zip_path = os.path.join(app.config['zip_filename'],)
 
         template_pdf = pdfrw.PdfReader('./upload/'+pdf_filename);
         template_pdf.Root.AcroForm.update(pdfrw.PdfDict(NeedAppearances=pdfrw.PdfObject('true')))
@@ -119,11 +118,11 @@ def generate():
         shutil.make_archive( zip_filename, 'zip', OUTPUT_FOLDER)
 
         # Return the download link to the zip folder
-        # return render_template('generazione.html', zip_filename=zip_filename)
         return send_file(os.path.basename(zip_filename + '.zip'), as_attachment=True)
     except Exception as error:
         print("An error occurred:", type(error).__name__, "–", error)
-        return render_template('error.html', error=(type(error).__name__))
+        error_message =  (type(error).__name__) + " - " + str(error)[:40]
+        return render_template('error.html', error=error_message)
 
 
 

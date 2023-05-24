@@ -65,6 +65,7 @@
             min="1"
             id="fieldNr"
             name="fieldNr"
+            required
           />
         </div>
         <div class="fields"></div>
@@ -93,28 +94,28 @@
 
         if (number > 0) {
           for (let i = 0; i < number; i++) {
-            fields.innerHTML += `<input type="text" class="genFields" name="campo-${i}" id="campo-${i}" placeholder="Insert the pdf field name" />`;
+            fields.innerHTML += `<input type="text" class="genFields" name="campo-${i}" id="campo-${i}" placeholder="Insert the pdf field name" required />`;
           }
         }
       });
 
       // Hndle submit
-      const form = document.querySelector("form");
-      const subBtn = document.getElementById("subBtn");
-      subBtn.addEventListener("click", function () {
-        setTimeout(() => {
-          form.innerHTML = `<img
-          style="width: 5em; margin: 0 auto; display: block"
-          src="./static/images/loading-icon-transparent-background-12.gif"
-          alt=""
-          srcset=""
-        />`;
-        }, 1000);
+      // const form = document.querySelector("form");
+      // const subBtn = document.getElementById("subBtn");
+      // subBtn.addEventListener("submit", function () {
+      //   setTimeout(() => {
+      //     form.innerHTML = `<img
+      //     style="width: 5em; margin: 0 auto; display: block"
+      //     src="./static/images/loading-icon-transparent-background-12.gif"
+      //     alt=""
+      //     srcset=""
+      //   />`;
+      //   }, 1000);
 
-        setTimeout(() => {
-          location.reload();
-        }, 3000);
-      });
+      //   setTimeout(() => {
+      //     location.reload();
+      //   }, 3000);
+      // });
     </script>
   </body>
 </html>
